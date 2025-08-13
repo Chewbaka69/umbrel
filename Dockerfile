@@ -57,7 +57,7 @@ COPY --from=base packages/os/build-steps /build-steps
 RUN /build-steps/initialize.sh
 
 # Install Linux kernel and non-free firmware.
-RUN apt-get install --yes \
+RUN apt-get install --no-install-recommends --yes \
     linux-image-amd64 \
     intel-microcode \
     amd64-microcode \
@@ -110,26 +110,26 @@ ARG NODE_SHA256_arm64
 # but we use its systemd-repart tool to expand partitions on boot.
 # We install mender-client via apt because injecting via mender-convert appears
 # to be broken on bookworm.
-RUN apt-get install --yes systemd-boot mender-client
+RUN apt-get --no-install-recommends install --yes systemd-boot mender-client
 
 # Install acpid
 # We use acpid to implement custom behaviour for power button presses
-RUN apt-get install --yes acpid
+RUN apt-get --no-install-recommends install --yes acpid
 RUN systemctl enable acpid
 
 # Install essential networking services
-RUN apt-get install --yes network-manager systemd-timesyncd openssh-server avahi-daemon avahi-discover avahi-utils libnss-mdns
+RUN apt-get install --no-install-recommends --yes network-manager systemd-timesyncd openssh-server avahi-daemon avahi-discover avahi-utils libnss-mdns
 
 # Install bluetooth stack
 # The default configuration enables all bluetooth controllers/adapters present on boot and plugged in after boot
-RUN apt-get install --yes bluez
+RUN apt-get install --no-install-recommends --yes bluez
 
 # Install essential system utilities
-RUN apt-get install --yes sudo nano vim less man iproute2 iputils-ping curl wget ca-certificates usbutils whois build-essential
+RUN apt-get install --no-install-recommends --yes sudo nano vim less man iproute2 iputils-ping curl wget ca-certificates usbutils whois build-essential
 
 # Install umbreld dependencies
 # (many of these can be remove after the apps refactor)
-RUN apt-get install --yes python3 fswatch jq rsync git gettext-base gnupg procps dmidecode unar imagemagick ffmpeg samba wsdd2 tini
+RUN apt-get install --no-install-recommends --yes python3 fswatch jq rsync git gettext-base gnupg procps dmidecode unar imagemagick ffmpeg samba wsdd2 tini
 
 # Disable automatically starting smbd and wsdd2 at boot so umbreld can initialize them only when they're needed
 RUN systemctl disable smbd wsdd2
@@ -137,7 +137,7 @@ RUN systemctl disable smbd wsdd2
 # Support for alternate filesystems
 # For some reason this always fails on arm64 but it's ok since we
 # don't support external storage on Pi anyway.
-RUN [ "${TARGETARCH}" = "amd64" ] && apt-get install --yes ntfs-3g || true
+RUN [ "${TARGETARCH}" = "amd64" ] && apt-get install --no-install-recommends --yes ntfs-3g || true
 
 # Install Node.js
 RUN NODE_ARCH=$([ "${TARGETARCH}" = "arm64" ] && echo "arm64" || echo "x64") && \
@@ -164,7 +164,7 @@ RUN echo "umbrel:umbrel" | chpasswd
 RUN usermod -aG sudo umbrel
 
 # Preload images
-RUN sudo apt-get install --yes skopeo
+RUN apt-get install --yes skopeo
 RUN mkdir -p /images
 RUN skopeo copy docker://getumbrel/tor@sha256:2ace83f22501f58857fa9b403009f595137fa2e7986c4fda79d82a8119072b6a docker-archive:/images/tor
 RUN skopeo copy docker://getumbrel/auth-server@sha256:b4a4b37896911a85fb74fa159e010129abd9dff751a40ef82f724ae066db3c2a docker-archive:/images/auth
@@ -196,7 +196,7 @@ RUN echo "$VERSION_ARG" > /run/version
 
 # Install umbreld
 COPY --chmod=755 ./entry.sh /run/
-COPY --from=be-build --chmod=755 /opt/umbreld /opt/umbreld
+COPY --from=umbrelos-base-${TARGETARCH} --chmod=755 /opt/umbreld /opt/umbreld
 
 VOLUME /data
 EXPOSE 80 443
