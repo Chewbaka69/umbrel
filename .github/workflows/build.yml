@@ -2,6 +2,16 @@ name: Build
 
 on:
   workflow_dispatch:
+    inputs:
+      VERSION:
+        description: 'version to tag image'
+        required: true
+        type: string
+      NAME:
+        description: 'Name of the project'
+        required: true
+        default: 'umbrelOs'
+        type: string
 
 concurrency:
   group: build
@@ -16,40 +26,30 @@ jobs:
     needs: shellcheck
     runs-on: ubuntu-latest
     permissions:
-      actions: write
-      packages: write
+      actions: read
+      packages: read
       contents: read
     steps:
-      - 
-        name: Check if the tag exists locally
-        uses: action-pack/tag-exists@v1
-        id: checkTag
-        with: 
-          tag: 'v${{ vars.VERSION }}'         
+      # Build Docker images
       -
         name: Finish when found
         run: |
           #!/bin/bash
           beta="false"
-          
-          val="${{ steps.checkTag.outputs.exists }}"
 
-          [[ "${{ vars.VERSION }}" == *"rc"* ]] && beta="true"
-          [[ "${{ vars.VERSION }}" == *"beta"* ]] && beta="true"
-          [[ "${{ vars.VERSION }}" == *"test"* ]] && val="true"
-          [[ "${{ vars.VERSION }}" == *"alpha"* ]] && val="true"
+          [[ "${{ inputs.VERSION }}" == *"rc"* ]] && beta="true"
+          [[ "${{ inputs.VERSION }}" == *"beta"* ]] && beta="true"
 
           echo "beta=${beta}" >> $GITHUB_ENV
-          echo "exists=${val}" >> $GITHUB_ENV
       -
         name: Checkout
-        if: env.exists == 'false'
+        if: inputs.VERSION
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
       -
         name: Docker metadata
-        if: env.exists == 'false'
+        if: inputs.VERSION
         id: meta
         uses: docker/metadata-action@v5
         with:
@@ -59,33 +59,25 @@ jobs:
             ghcr.io/${{ github.repository }}
           tags: |
             type=raw,value=latest,priority=100,enable=${{ env.beta == 'false' }}
-            type=raw,value=${{ vars.VERSION }}
+            type=raw,value=${{ inputs.VERSION }}
           labels: |
-            org.opencontainers.image.title=${{ vars.NAME }}
+            org.opencontainers.image.title=${{ inputs.NAME }}
         env:
           DOCKER_METADATA_ANNOTATIONS_LEVELS: manifest,index     
       - 
         name: Set up Docker Buildx
-        if: env.exists == 'false'
+        if: inputs.VERSION
         uses: docker/setup-buildx-action@v3
       -
         name: Login into Docker Hub
-        if: env.exists == 'false'
+        if: inputs.VERSION
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
-        name: Login to GitHub Container Registry
-        if: env.exists == 'false'
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      -
         name: Build Docker image
-        if: env.exists == 'false'
+        if: inputs.VERSION
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -97,24 +89,3 @@ jobs:
           annotations: ${{ steps.meta.outputs.annotations }}
           build-args: |
             VERSION_ARG=${{ steps.meta.outputs.version }}
-      -
-        name: Create a release
-        if: env.exists == 'false'
-        uses: action-pack/github-release@v2
-        with:
-          tag: "v${{ steps.meta.outputs.version }}"
-          title: "v${{ steps.meta.outputs.version }}"
-          token: ${{ secrets.REPO_ACCESS_TOKEN }}
-      -
-        name: Send mail
-        if: env.exists == 'false'
-        uses: action-pack/send-mail@v1
-        with:
-          to: ${{secrets.MAILTO}}
-          from: Github Actions <${{secrets.MAILTO}}>
-          connection_url: ${{secrets.MAIL_CONNECTION}}
-          subject: Build of ${{ github.event.repository.name }} v${{ steps.meta.outputs.version }} completed
-          body: |
-              The build job of ${{ github.event.repository.name }} v${{ steps.meta.outputs.version }} was completed successfully! 
-              
-              See https://github.com/${{ github.repository }}/actions for more information.
