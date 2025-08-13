@@ -92,7 +92,7 @@ ARG TARGETARCH
 # TODO: Instead of using the debian:bookworm image as a base we should
 # build a fresh rootfs from scratch. We can use the same tool the Docker
 # images use for reproducible Debian builds: https://github.com/debuerreotype/debuerreotype
-FROM umbrelos-base-${TARGETARCH}:latest AS umbrelos
+FROM umbrelos-base-${TARGETARCH} AS umbrelos
 
 # We need to duplicate this such that we can also use the argument below.
 ARG TARGETARCH
@@ -196,7 +196,6 @@ RUN echo "$VERSION_ARG" > /run/version
 
 # Install umbreld
 COPY --chmod=755 ./entry.sh /run/
-COPY --from=umbrelos --chmod=755 /opt/umbreld /opt/umbreld
 
 VOLUME /data
 EXPOSE 80 443
