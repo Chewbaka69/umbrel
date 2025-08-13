@@ -58,7 +58,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           context: git
-          images: secrets.DOCKERHUB_REPO
+          images: ${{ secrets.DOCKERHUB_REPO }}
           tags: |
             type=raw,value=latest,priority=100,enable=${{ env.beta == 'false' }}
             type=raw,value=${{ inputs.VERSION }}
