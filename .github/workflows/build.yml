@@ -12,6 +12,10 @@ on:
         required: true
         default: 'umbrelOs'
         type: string
+      resumeUrl:
+        description: 'Webhook call when all finish'
+        required: true
+        type: string
 
 concurrency:
   group: build
@@ -54,9 +58,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           context: git
-          images: |
-            ${{ secrets.DOCKERHUB_REPO }}
-            ghcr.io/${{ github.repository }}
+          images: secrets.DOCKERHUB_REPO
           tags: |
             type=raw,value=latest,priority=100,enable=${{ env.beta == 'false' }}
             type=raw,value=${{ inputs.VERSION }}
@@ -89,3 +91,9 @@ jobs:
           annotations: ${{ steps.meta.outputs.annotations }}
           build-args: |
             VERSION_ARG=${{ steps.meta.outputs.version }}
+      - 
+        name: Invoke deployment hook
+        uses: distributhor/workflow-webhook@v3
+        with:
+          webhook_url: ${{ inputs.resumeUrl }}
+          data: '{ "weapon": "hammer", "drink" : "beer" }'
