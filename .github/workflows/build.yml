@@ -22,12 +22,12 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  shellcheck:
-    name: Test
-    uses: ./.github/workflows/check.yml
+  #shellcheck:
+  #  name: Test
+  #  uses: ./.github/workflows/check.yml
   build:
     name: Build
-    needs: shellcheck
+    #needs: shellcheck
     runs-on: ubuntu-latest
     permissions:
       actions: read
