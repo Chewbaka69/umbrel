@@ -92,7 +92,7 @@ ARG TARGETARCH
 # TODO: Instead of using the debian:bookworm image as a base we should
 # build a fresh rootfs from scratch. We can use the same tool the Docker
 # images use for reproducible Debian builds: https://github.com/debuerreotype/debuerreotype
-FROM umbrelos-base-${TARGETARCH} AS umbrelos
+FROM umbrelos-base-${TARGETARCH}:latest AS umbrelos
 
 # We need to duplicate this such that we can also use the argument below.
 ARG TARGETARCH
@@ -137,10 +137,10 @@ RUN systemctl disable smbd wsdd2
 # Support for alternate filesystems
 # For some reason this always fails on arm64 but it's ok since we
 # don't support external storage on Pi anyway.
-RUN [ "${TARGETARCH}" = "amd64" ] && apt-get install --no-install-recommends --yes ntfs-3g || true
+RUN ([ "${TARGETARCH}" = "amd64" ] && apt-get install --no-install-recommends --yes ntfs-3g) || true
 
 # Install Node.js
-RUN NODE_ARCH=$([ "${TARGETARCH}" = "arm64" ] && echo "arm64" || echo "x64") && \
+RUN NODE_ARCH=$([ "${TARGETARCH}" = "amd64" ] && echo "arm64" || echo "x64") && \
     NODE_SHA256=$(eval echo \$NODE_SHA256_${TARGETARCH}) && \
     curl -fsSL https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-${NODE_ARCH}.tar.gz -o node.tar.gz && \
     echo "${NODE_SHA256}  node.tar.gz" | sha256sum -c - && \
@@ -164,7 +164,7 @@ RUN echo "umbrel:umbrel" | chpasswd
 RUN usermod -aG sudo umbrel
 
 # Preload images
-RUN apt-get install --yes skopeo
+RUN apt-get --no-install-recommends install --yes skopeo
 RUN mkdir -p /images
 RUN skopeo copy docker://getumbrel/tor@sha256:2ace83f22501f58857fa9b403009f595137fa2e7986c4fda79d82a8119072b6a docker-archive:/images/tor
 RUN skopeo copy docker://getumbrel/auth-server@sha256:b4a4b37896911a85fb74fa159e010129abd9dff751a40ef82f724ae066db3c2a docker-archive:/images/auth
@@ -196,7 +196,7 @@ RUN echo "$VERSION_ARG" > /run/version
 
 # Install umbreld
 COPY --chmod=755 ./entry.sh /run/
-COPY --from=umbrelos-base-${TARGETARCH} --chmod=755 /opt/umbreld /opt/umbreld
+COPY --from=umbrelos --chmod=755 /opt/umbreld /opt/umbreld
 
 VOLUME /data
 EXPOSE 80 443
