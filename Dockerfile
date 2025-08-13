@@ -137,7 +137,7 @@ RUN systemctl disable smbd wsdd2
 # Support for alternate filesystems
 # For some reason this always fails on arm64 but it's ok since we
 # don't support external storage on Pi anyway.
-RUN ([ "${TARGETARCH}" = "amd64" ] && apt-get install --no-install-recommends --yes ntfs-3g) || true
+RUN [ "${TARGETARCH}" = "amd64" ] && apt-get install --no-install-recommends --yes ntfs-3g || true
 
 # Install Node.js
 RUN NODE_ARCH=$([ "${TARGETARCH}" = "amd64" ] && echo "arm64" || echo "x64") && \
