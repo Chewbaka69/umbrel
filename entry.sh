@@ -36,13 +36,13 @@ fi
 #   fi
 # fi
 
-# target=$(hostname -s)
+target=$(hostname -s)
 
 # if ! docker inspect "$target" &>/dev/null; then
 #   error "Failed to find a container with name: '$target'!" && exit 16
 # fi
 
-# resp=$(docker inspect "$target")
+resp=$(docker inspect "$target")
 # network=$(echo "$resp" | jq -r '.[0].NetworkSettings.Networks["umbrel_main_network"]')
 
 # if [ -z "$network" ] || [[ "$network" == "null" ]]; then
