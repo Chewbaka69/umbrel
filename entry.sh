@@ -17,6 +17,10 @@ if [ ! -S /var/run/docker.sock ]; then
   error "Docker socket is missing? Please bind /var/run/docker.sock in your compose file." && exit 13
 fi
 
+if [ ! -S /var/run/dbus/system_bus_socket ]; then
+  error "Dbus socket is missing? Please bind /var/run/dbus/system_bus_socket in your compose file." && exit 13
+fi
+
 ##
 # Remove and recreate umbrel_main_network
 ##
