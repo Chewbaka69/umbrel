@@ -1,3 +1,10 @@
+[build_url]: https://github.com/chewbaka69/umbrel/
+[hub_url]: https://hub.docker.com/r/chewbaka/umbrel
+[tag_url]: https://hub.docker.com/r/chewbaka/umbrel/tags
+[pkg_url]: https://github.com/chewbaka69/umbrel/pkgs/container/umbrel
+
+[Build]: https://github.com/chewbaka69/umbrel/actions/workflows/build.yml/badge.svg
+
 <h1 align="center">umbrelOS<br />
 <div align="center">
 <a href="https://github.com/chewbaka69/umbrel"><img src="https://raw.githubusercontent.com/chewbaka69/umbrel/master/.github/header.png" title="Logo" style="max-width:100%;" width="256" /></a>
@@ -68,13 +75,6 @@ docker run -it --rm --name umbrel --pid=host -p 80:80 -v "${PWD:-.}/umbrel:/data
 
 ## Stars 🌟
 [![Stars](https://starchart.cc/chewbaka69/umbrel.svg?variant=adaptive)](https://starchart.cc/chewbaka69/umbrel)
-
-[build_url]: https://github.com/chewbaka69/umbrel/
-[hub_url]: https://hub.docker.com/r/chewbaka69/umbrel
-[tag_url]: https://hub.docker.com/r/chewbaka69/umbrel/tags
-[pkg_url]: https://github.com/chewbaka69/umbrel/pkgs/container/umbrel
-
-[Build]: https://github.com/chewbaka69/umbrel/actions/workflows/build.yml/badge.svg
 [Size]: https://img.shields.io/docker/image-size/chewbaka/umbrel/latest?color=066da5&label=size
 [Pulls]: https://img.shields.io/docker/pulls/chewbaka/umbrel.svg?style=flat&label=pulls&logo=docker
 [Version]: https://img.shields.io/docker/v/chewbaka/umbrel/latest?arch=amd64&sort=semver&color=066da5
