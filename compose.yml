@@ -1,6 +1,6 @@
 services:
   umbrel:
-    image: dockurr/umbrel
+    image: chewbaka/umbrel
     container_name: umbrel
     pid: host
     ports:
