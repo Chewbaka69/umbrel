@@ -84,6 +84,8 @@ jobs:
           annotations: ${{ steps.meta.outputs.annotations }}
           build-args: |
             VERSION_ARG=${{ steps.meta.outputs.version }}
+          cache-from: type=registry,ref=chewbaka69/umbrel:buildcache
+          cache-to: type=registry,ref=chewbaka69/umbrel:buildcache,mode=max
       - name: Hook when success
         if: inputs.resumeUrl
         uses: distributhor/workflow-webhook@v3
