@@ -91,7 +91,7 @@ jobs:
           webhook_url: ${{ inputs.resumeUrl }}
           data: '{ "success": true}'
       - name: Hook when failed
-        if: ${{ failure() and inputs.resumeUrl }}
+        if: failure() && inputs.resumeUrl
         uses: distributhor/workflow-webhook@v3
         with:
           webhook_url: ${{ inputs.resumeUrl }}
