@@ -136,7 +136,7 @@ RUN systemctl disable smbd wsdd2
 RUN [ "${TARGETARCH}" = "amd64" ] && apt-get install --no-install-recommends --yes ntfs-3g || true
 
 # Install Node.js
-RUN NODE_ARCH=$([ "${TARGETARCH}" = "amd64" ] && echo "arm64" || echo "x64") && \
+RUN NODE_ARCH=$([ "${TARGETARCH}" = "arm64" ] && echo "arm64" || echo "x64") && \
     NODE_SHA256=$(eval echo \$NODE_SHA256_${TARGETARCH}) && \
     curl -fsSL https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-${NODE_ARCH}.tar.gz -o node.tar.gz && \
     tar -xz -f ./node.tar.gz -C /usr/local --strip-components=1 && \
