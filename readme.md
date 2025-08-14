@@ -1,9 +1,15 @@
-[build_url]: https://github.com/chewbaka69/umbrel/
-[hub_url]: https://hub.docker.com/r/chewbaka/umbrel
-[tag_url]: https://hub.docker.com/r/chewbaka/umbrel/tags
-[pkg_url]: https://github.com/chewbaka69/umbrel/pkgs/container/umbrel
-
 [Build]: https://github.com/chewbaka69/umbrel/actions/workflows/build.yml/badge.svg
+[build_url]: https://github.com/chewbaka69/umbrel/
+
+[Pulls]: https://img.shields.io/docker/pulls/chewbaka/umbrel.svg?style=flat&label=pulls&logo=docker
+[hub_url]: https://hub.docker.com/r/chewbaka/umbrel
+
+[Size]: https://img.shields.io/docker/image-size/chewbaka/umbrel/latest?color=066da5&label=size
+[Version]: https://img.shields.io/docker/v/chewbaka/umbrel/latest?arch=amd64&sort=semver&color=066da5
+[tag_url]: https://hub.docker.com/r/chewbaka/umbrel/tags
+
+[Package]:https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fipitio.github.io%2Fbackage%2Fdockur%2Fchewbaka69%2Fumbrel.json&query=%24.downloads&logo=github&style=flat&color=066da5&label=pulls
+[pkg_url]: https://github.com/chewbaka69/umbrel/pkgs/container/umbrel
 
 <h1 align="center">umbrelOS<br />
 <div align="center">
@@ -75,7 +81,3 @@ docker run -it --rm --name umbrel --pid=host -p 80:80 -v "${PWD:-.}/umbrel:/data
 
 ## Stars 🌟
 [![Stars](https://starchart.cc/chewbaka69/umbrel.svg?variant=adaptive)](https://starchart.cc/chewbaka69/umbrel)
-[Size]: https://img.shields.io/docker/image-size/chewbaka/umbrel/latest?color=066da5&label=size
-[Pulls]: https://img.shields.io/docker/pulls/chewbaka/umbrel.svg?style=flat&label=pulls&logo=docker
-[Version]: https://img.shields.io/docker/v/chewbaka/umbrel/latest?arch=amd64&sort=semver&color=066da5
-[Package]:https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fipitio.github.io%2Fbackage%2Fdockur%2Fchewbaka69%2Fumbrel.json&query=%24.downloads&logo=github&style=flat&color=066da5&label=pulls
