@@ -106,7 +106,7 @@ ARG NODE_SHA256_arm64
 # but we use its systemd-repart tool to expand partitions on boot.
 # We install mender-client via apt because injecting via mender-convert appears
 # to be broken on bookworm.
-RUN apt-get --no-install-recommends install --yes systemd-boot mender-client
+RUN apt-get --no-install-recommends install --yes systemd-boot mender-client apt-utils
 
 # Install acpid
 # We use acpid to implement custom behaviour for power button presses
