@@ -188,7 +188,8 @@ RUN mv /home        /data/umbrel-os/home
 
 RUN echo "$VERSION_ARG" > /run/version
 
-# Install umbreld
+# Launcher and fix
+COPY source/modules/apps/app.ts    /opt/umbreld/source/modules/apps/app.ts
 COPY --chmod=755 ./entry.sh /run/
 
 VOLUME /data
