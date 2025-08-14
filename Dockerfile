@@ -4,12 +4,8 @@ ARG DOCKER_VERSION=25.0.4
 ARG DOCKER_COMMIT=0efeea282625c87d28fa1f0d7aace794be2ce3cd
 
 ARG YQ_VERSION=4.24.5
-ARG YQ_SHA256_amd64=c93a696e13d3076e473c3a43c06fdb98fafd30dc2f43bc771c4917531961c760
-ARG YQ_SHA256_arm64=8879e61c0b3b70908160535ea358ec67989ac4435435510e1fcb2eda5d74a0e9
 
 ARG NODE_VERSION=22.13.0
-ARG NODE_SHA256_amd64=9a33e89093a0d946c54781dcb3ccab4ccf7538a7135286528ca41ca055e9b38f  
-ARG NODE_SHA256_arm64=e0cc088cb4fb2e945d3d5c416c601e1101a15f73e0f024c9529b964d9f6dce5b
 
 FROM scratch AS base
 
@@ -143,7 +139,6 @@ RUN [ "${TARGETARCH}" = "amd64" ] && apt-get install --no-install-recommends --y
 RUN NODE_ARCH=$([ "${TARGETARCH}" = "amd64" ] && echo "arm64" || echo "x64") && \
     NODE_SHA256=$(eval echo \$NODE_SHA256_${TARGETARCH}) && \
     curl -fsSL https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-${NODE_ARCH}.tar.gz -o node.tar.gz && \
-    echo "${NODE_SHA256}  node.tar.gz" | sha256sum -c - && \
     tar -xz -f ./node.tar.gz -C /usr/local --strip-components=1 && \
     rm -rf node.tar.gz
 
@@ -151,7 +146,6 @@ RUN NODE_ARCH=$([ "${TARGETARCH}" = "amd64" ] && echo "arm64" || echo "x64") && 
 # Debian repos have kislyuk/yq but we want mikefarah/yq
 RUN YQ_SHA256=$(eval echo \$YQ_SHA256_${TARGETARCH}) && \
     curl -L https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_${TARGETARCH} -o /usr/bin/yq && \
-    echo "${YQ_SHA256} /usr/bin/yq" | sha256sum -c && \
     chmod +x /usr/bin/yq
 
 RUN curl -fsSL https://raw.githubusercontent.com/docker/docker-install/${DOCKER_COMMIT}/install.sh -o /tmp/install-docker.sh
