@@ -14,7 +14,6 @@ on:
         type: string
       resumeUrl:
         description: 'Webhook call when all finish'
-        required: true
         type: string
 
 concurrency:
@@ -86,12 +85,13 @@ jobs:
           build-args: |
             VERSION_ARG=${{ steps.meta.outputs.version }}
       - name: Hook when success
+        if: inputs.resumeUrl
         uses: distributhor/workflow-webhook@v3
         with:
           webhook_url: ${{ inputs.resumeUrl }}
           data: '{ "success": true}'
       - name: Hook when failed
-        if: failure()
+        if: failure() and inputs.resumeUrl
         uses: distributhor/workflow-webhook@v3
         with:
           webhook_url: ${{ inputs.resumeUrl }}
